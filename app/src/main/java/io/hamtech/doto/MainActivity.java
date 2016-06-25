@@ -5,11 +5,13 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -34,11 +40,14 @@ import io.hamtech.doto.db.TasksAdapter;
 
 public class MainActivity extends AppCompatActivity {
     static final String TAG = "MainActivity";
-    TaskDbHelper mHelper;
-    ListView mTaskListView;
-    TasksAdapter mAdapter;
-    ArrayList<Task> taskArray = new ArrayList<>();
-
+    public TaskDbHelper mHelper;
+    public ListView mTaskListView;
+    public TasksAdapter mAdapter;
+    public ArrayList<Task> taskArray = new ArrayList<>();
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +59,18 @@ public class MainActivity extends AppCompatActivity {
         mTaskListView = (ListView) findViewById(R.id.list_todo); //connect listView
         mTaskListView.setAdapter(mAdapter);
 
+        mTaskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(),"This is an Android Toast Message", Toast.LENGTH_LONG).show();
+                //Task t = taskArray.get(position); //get selected task
+                //showEditDialog(t);
+            }
+        });
+
 
         //Dummy Data
         Task newTask = new Task("This is test");
-        mAdapter.add(newTask);
-
 
 //        mHelper = new TaskDbHelper(this);
 
@@ -69,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
 //        cursor.close();
 //        db.close();
 
-       // updateUI(); //load values into view
-
+        // updateUI(); //load values into view
     }
 
     @Override
@@ -106,25 +121,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addTaskToDB(Task toSave){
-          taskArray.add(toSave); //add array object
-          //save to SQL
-          mAdapter.notifyDataSetChanged();
-
-//          mAdapter.notifyItemInserted(todoItems.indexOf(tdi));
-//        todoItems.add(toSave);
-//        tdi.save(); //SQL Create.R.U.D.
-//        todoAdapter.notifyItemInserted(todoItems.indexOf(tdi));
-//        displayCompletionToast();
-//        SQLiteDatabase db = mHelper.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
-//        db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
-//                null,
-//                values,
-//                SQLiteDatabase.CONFLICT_REPLACE);
-//        db.close();
-
+    private void addTaskToDB(Task toSave) {
+        taskArray.add(toSave); //add array object
+        //save to SQL
+        mAdapter.notifyDataSetChanged();
     }
 
     private void updateUI() {
@@ -166,16 +166,18 @@ public class MainActivity extends AppCompatActivity {
 //        updateUI();
     }
 
-    public void editTask(View view){
+    public void editTask(View view) {
 //        View parent = (View) view.getParent();
 //        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
 //        String task = String.valueOf(taskTextView.getText());
-//        showEditDialog();
+//        Task t = new Task(task);
+//        showEditDialog(t);
     }
 
-    private void showEditDialog() {
+    private void showEditDialog(Task task) {
 //        FragmentManager fm = getSupportFragmentManager();
 //        EditTaskDialogFragment editNameDialogFragment = EditTaskDialogFragment.newInstance("Some Title");
+//        editNameDialogFragment.setText(task);
 //        editNameDialogFragment.show(fm, "fragment_edit_task");
     }
 

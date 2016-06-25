@@ -22,6 +22,7 @@ public class EditTaskDialogFragment extends android.support.v4.app.DialogFragmen
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
+
     }
 
     public static EditTaskDialogFragment newInstance(String title) {
@@ -30,6 +31,10 @@ public class EditTaskDialogFragment extends android.support.v4.app.DialogFragmen
         args.putString("title", title);
         frag.setArguments(args);
         return frag;
+    }
+
+    public void setText(Task toEdit){
+        mEditText.setText(toEdit.name);
     }
 
     @Override
