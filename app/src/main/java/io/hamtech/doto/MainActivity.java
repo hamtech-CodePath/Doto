@@ -44,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
     public ListView mTaskListView;
     public TasksAdapter mAdapter;
     public ArrayList<Task> taskArray = new ArrayList<>();
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    public boolean longTouch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +60,25 @@ public class MainActivity extends AppCompatActivity {
         mTaskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(),"This is an Android Toast Message", Toast.LENGTH_LONG).show();
-                //Task t = taskArray.get(position); //get selected task
-                //showEditDialog(t);
+                Task t = taskArray.get(position); //get selected task
+                Toast.makeText(getApplicationContext(),t.name, Toast.LENGTH_LONG).show();
+                if(!longTouch) {
+                    showEditDialog(t);
+                }
+
+                longTouch = false;
             }
         });
 
+        mTaskListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                longTouch = true;
+                showDeleteDialog(view, position);
+                Toast.makeText(getApplicationContext(),"delete", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
 
         //Dummy Data
         Task newTask = new Task("This is test");
@@ -167,18 +178,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void editTask(View view) {
-//        View parent = (View) view.getParent();
-//        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
-//        String task = String.valueOf(taskTextView.getText());
-//        Task t = new Task(task);
-//        showEditDialog(t);
+        View parent = (View) view.getParent();
+        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
+        String task = String.valueOf(taskTextView.getText());
+        Task t = new Task(task);
+        showEditDialog(t);
     }
 
     private void showEditDialog(Task task) {
-//        FragmentManager fm = getSupportFragmentManager();
-//        EditTaskDialogFragment editNameDialogFragment = EditTaskDialogFragment.newInstance("Some Title");
-//        editNameDialogFragment.setText(task);
-//        editNameDialogFragment.show(fm, "fragment_edit_task");
+        FragmentManager fm = getSupportFragmentManager();
+        EditTaskDialogFragment editNameDialogFragment = EditTaskDialogFragment.newInstance("Some Title");
+        //editNameDialogFragment.setText(task);
+        editNameDialogFragment.show(fm, "fragment_edit_task");
+    }
+
+    public void showDeleteDialog(View itemView ,final int position){
+        final AlertDialog removalDialog = new AlertDialog.Builder(itemView.getContext())
+                .setTitle("Remove from your list?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //todoItems.get(position).delete(); //SQL C.R.U.Delete.
+                        taskArray.remove(position);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .create();
+        removalDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                //removalDialog.getWindow().setBackgroundDrawableResource(R.color.activityBackground);
+                //removalDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#89613D"));
+                //removalDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#89613D"));
+            }
+        });
+        removalDialog.show();
     }
 
 }
