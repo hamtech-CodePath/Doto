@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActiveAndroid.initialize(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
                 return false;
             }
         });
+
+        taskArray.addAll(Task.getAllItems()); //SQL C.Read.U.D.
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
 
     private void addTaskToDB(Task toSave) {
         taskArray.add(toSave); //add array object
-        //save to SQL
+        toSave.save(); //save to SQL
         mAdapter.notifyDataSetChanged();
     }
 

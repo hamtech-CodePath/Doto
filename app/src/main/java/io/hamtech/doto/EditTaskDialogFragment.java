@@ -73,6 +73,7 @@ public class EditTaskDialogFragment extends android.support.v4.app.DialogFragmen
             public void onClick(View v) {
                 //Send changed task to actvity
                 passData(mEditText.getText().toString());
+                dismiss();
             }
         });
 
