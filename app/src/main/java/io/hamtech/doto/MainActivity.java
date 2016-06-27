@@ -38,13 +38,14 @@ import io.hamtech.doto.db.TaskContract;
 import io.hamtech.doto.db.TaskDbHelper;
 import io.hamtech.doto.db.TasksAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EditTaskDialogFragment.OnDataPass {
     static final String TAG = "MainActivity";
     public TaskDbHelper mHelper;
     public ListView mTaskListView;
     public TasksAdapter mAdapter;
     public ArrayList<Task> taskArray = new ArrayList<>();
     public boolean longTouch;
+    private int clickedPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Task t = taskArray.get(position); //get selected task
-                Toast.makeText(getApplicationContext(),t.name, Toast.LENGTH_LONG).show();
+                clickedPosition = position;
                 if(!longTouch) {
-                    showEditDialog(t);
+                    showEditDialog(t, position);
                 }
-
                 longTouch = false;
             }
         });
@@ -75,28 +75,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 longTouch = true;
                 showDeleteDialog(view, position);
-                Toast.makeText(getApplicationContext(),"delete", Toast.LENGTH_LONG).show();
                 return false;
             }
         });
-
-        //Dummy Data
-        Task newTask = new Task("This is test");
-
-//        mHelper = new TaskDbHelper(this);
-
-//        SQLiteDatabase db = mHelper.getReadableDatabase();
-//        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
-//                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
-//                null, null, null, null, null);
-//        while(cursor.moveToNext()) {
-//            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-//            Log.d(TAG, "Task: " + cursor.getString(idx));
-//        }
-//        cursor.close();
-//        db.close();
-
-        // updateUI(); //load values into view
     }
 
     @Override
@@ -138,57 +119,9 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private void updateUI() {
-//        ArrayList<String> taskList = new ArrayList<>();
-//        SQLiteDatabase db = mHelper.getReadableDatabase();
-//        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
-//                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
-//                null, null, null, null, null);
-//        while (cursor.moveToNext()) {
-//            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-//            taskList.add(cursor.getString(idx));
-//        }
-//
-//        if (mAdapter == null) {
-//            mAdapter = new ArrayAdapter<>(this,
-//                    R.layout.item_todo,
-//                    R.id.task_title,
-//                    taskList);
-//            mTaskListView.setAdapter(mAdapter);
-//        } else {
-//            mAdapter.clear();
-//            mAdapter.addAll(taskList);
-//            mAdapter.notifyDataSetChanged();
-//        }
-//
-//        cursor.close();
-//        db.close();
-    }
-
-    public void deleteTask(View view) {
-//        View parent = (View) view.getParent();
-//        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
-//        String task = String.valueOf(taskTextView.getText());
-//        SQLiteDatabase db = mHelper.getWritableDatabase();
-//        db.delete(TaskContract.TaskEntry.TABLE,
-//                TaskContract.TaskEntry.COL_TASK_TITLE + " = ?",
-//                new String[]{task});
-//        db.close();
-//        updateUI();
-    }
-
-    public void editTask(View view) {
-        View parent = (View) view.getParent();
-        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
-        String task = String.valueOf(taskTextView.getText());
-        Task t = new Task(task);
-        showEditDialog(t);
-    }
-
-    private void showEditDialog(Task task) {
+    private void showEditDialog(Task task, int pos) {
         FragmentManager fm = getSupportFragmentManager();
-        EditTaskDialogFragment editNameDialogFragment = EditTaskDialogFragment.newInstance("Some Title");
-        //editNameDialogFragment.setText(task);
+        EditTaskDialogFragment editNameDialogFragment = EditTaskDialogFragment.newInstance("Some Title", task, pos);
         editNameDialogFragment.show(fm, "fragment_edit_task");
     }
 
@@ -220,4 +153,12 @@ public class MainActivity extends AppCompatActivity {
         removalDialog.show();
     }
 
+    //Mark - OnPassData
+    @Override
+    public void onDataPass(String task) {
+        Log.d(TAG,taskArray.toString());
+        Toast.makeText(getApplicationContext(), "Edited Task:" + task + "Pos:" + clickedPosition ,Toast.LENGTH_SHORT).show();
+        taskArray.get(clickedPosition).name = task;
+        mAdapter.notifyDataSetChanged();
+    }
 }
