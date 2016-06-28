@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -56,6 +57,31 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    EditText taskEditText = new EditText(this);
+//                    AlertDialog dialog = new AlertDialog.Builder(this)
+//                            .setTitle("Add a new task")
+//                            .setMessage("What do you want to do next?")
+//                            .setView(taskEditText)
+//                            .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Task task = new Task(String.valueOf(taskEditText.getText()));
+//                                    addTaskToDB(task); //save task in db
+//                                }
+//                            })
+//                            .setNegativeButton("Cancel", null)
+//                            .create();
+//                    dialog.show();
+
+                }
+            });
+        }
 
         mAdapter = new TasksAdapter(this, taskArray); // make adapter
         mTaskListView = (ListView) findViewById(R.id.list_todo); //connect listView
@@ -136,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements EditTaskDialogFra
                 .setTitle("Remove from your list?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //todoItems.get(position).delete(); //SQL C.R.U.Delete.
                         taskArray.remove(position);
                         mAdapter.notifyDataSetChanged();
                     }
