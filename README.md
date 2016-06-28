@@ -4,7 +4,7 @@
 
 Submitted by: **Hugh A. Miles**
 
-Time spent: **X** hours spent in total
+Time spent: **18** hours spent in total
 
 ## User Stories
 
@@ -31,7 +31,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![alt tag](https://raw.githubusercontent.com/hamtech-CodePath/Doto/master/Doto.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
